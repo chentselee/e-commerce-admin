@@ -5,12 +5,12 @@ const Product = (name = "", id = "", price = "", created = "") => {
   card.classList.add("card", "mb-3", "mx-auto");
   card.innerHTML = `
     <div class="row no-gutters">
-      <div class="col-2">
+      <div class="col-3">
         <img class="card-img">
       </div>
       <div class="col-8">
         <div class="card-body container">
-          <dl class="row">
+          <dl class="row mb-0">
             <dt class="col-4">名稱</dt>
             <dd class="col-8">
               <p class="card-title">${name}</p>
@@ -30,7 +30,7 @@ const Product = (name = "", id = "", price = "", created = "") => {
           </dl>
         </div>
       </div>
-      <div class="col-2"></div>
+      <div class="col-1"></div>
     </div>
   `;
   return card;
@@ -41,7 +41,7 @@ async function listProducts() {
   const products = await res.json();
   await products.forEach((product) => {
     const col = document.createElement("div");
-    col.classList.add("col-12");
+    col.classList.add("col-md-6");
     col.appendChild(
       Product(
         product.name,
