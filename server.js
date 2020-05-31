@@ -15,7 +15,7 @@ db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => console.log("db connected"));
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("static"));
 app.use("/products", products);
 app.use("/categories", categories);

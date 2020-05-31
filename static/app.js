@@ -1,6 +1,10 @@
-const api = "http://localhost:8000";
-
-const Product = (name = "", id = "", price = "", created = "") => {
+const Product = (
+  name = "",
+  id = "",
+  price = "",
+  created = "",
+  updated = ""
+) => {
   const card = document.createElement("div");
   card.classList.add("card", "mb-3", "mx-auto");
   card.innerHTML = `
@@ -19,13 +23,17 @@ const Product = (name = "", id = "", price = "", created = "") => {
             <dd class="col-8">
               <p class="card-text">${id}</p>
             </dd>
-            <dt class="col-4">價格</dt>
+            <dt class="col-4">價格(元)</dt>
             <dd class="col-8">
               <p class="card-text">${price}</p>
             </dd>
             <dt class="col-4">新增時間</dt>
             <dd class="col-8">
               <p class="card-text">${created}</p>
+            </dd>
+            <dt class="col-4">最後更新</dt>
+            <dd class="col-8">
+              <p class="card-text">${updated ? updated : "-"}</p>
             </dd>
           </dl>
         </div>
@@ -35,6 +43,8 @@ const Product = (name = "", id = "", price = "", created = "") => {
   `;
   return card;
 };
+
+const api = "http://localhost:8000";
 
 async function listProducts() {
   const res = await fetch(`${api}/products`);
@@ -76,14 +86,43 @@ async function reloadProducts() {
 
 listProducts();
 
+const maxImageSizeMB = 1;
+const maxImageSize = 1024 * 1024 * maxImageSizeMB;
+
+const productImageInput = document.querySelector("#image");
+productImageInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file.size > maxImageSize) {
+    alert(`圖片必須小於${maxImageSizeMB}MB!`);
+    event.target.value = "";
+  } else {
+    const label = document.querySelector(".custom-file-label");
+    label.textContent = productImageInput.value.split("\\").pop();
+  }
+});
+
 const newProductForm = document.querySelector("#new-product");
 newProductForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
   const formData = new FormData(event.target);
+  const file = productImageInput.files[0];
+  if (file) {
+    const fileData = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener("loadend", (event) => {
+        resolve(event.target.result);
+      });
+      reader.readAsDataURL(file);
+    });
+    formData.append("image", fileData);
+  }
+
   const serializedFormData = {};
   for (const [key, value] of formData.entries()) {
     serializedFormData[key] = value;
   }
+
   const res = await fetch(`${api}/products`, {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -94,6 +133,6 @@ newProductForm.addEventListener("submit", async (event) => {
     await reloadProducts();
     event.target.reset();
   } else {
-    alert(`新增失敗\n${res.body.msg}`);
+    alert(`新增失敗, ${res.body.msg}`);
   }
 });

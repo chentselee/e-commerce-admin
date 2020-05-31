@@ -6,7 +6,8 @@ const productSchema = new mongoose.Schema({
   category: { type: String, required: true },
   name: { type: String, required: true },
   price: { type: Number, required: true },
-  created: { type: Date },
+  created: { type: Date, required: true },
+  updated: { type: Date },
   image: Buffer,
 });
 
@@ -55,15 +56,43 @@ router.get("/", (req, res) => {
 router.post("/", (req, res) => {
   const newProduct = new Product({
     ...req.body,
+    image: req.body.image ? new Buffer.from(req.body.image, "base64") : null,
     created: new Date(),
   });
   newProduct.save((error) => {
     if (error) {
       res.status(400).json({ msg: error });
     } else {
-      res.end();
+      res.sendStatus(201);
     }
   });
+});
+
+router.patch("/", (req, res) => {
+  const { id, ...updatedProduct } = req.body;
+  Product.updateOne({ _id: id }, { ...updatedProduct, updated: new Date() })
+    .exec()
+    .then((result) => {
+      if (result.ok !== 1) {
+        res.sendStatus(500);
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((error) => res.status(500).json({ msg: error }));
+});
+
+router.delete("/", (req, res) => {
+  Product.deleteOne({ _id: req.body.id })
+    .exec()
+    .then((result) => {
+      if (result.ok !== 1) {
+        res.sendStatus(500);
+      } else {
+        res.json({ deletedCount: result.deletedCount });
+      }
+    })
+    .catch((error) => res.status(500).json({ msg: error }));
 });
 
 module.exports = router;
