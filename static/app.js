@@ -88,20 +88,21 @@ listProducts();
 
 const maxImageSizeMB = 1;
 const maxImageSize = 1024 * 1024 * maxImageSizeMB;
-
+const productImageInputLabel = document.querySelector(".custom-file-label");
 const productImageInput = document.querySelector("#image");
+
 productImageInput.addEventListener("change", (event) => {
   const file = event.target.files[0];
   if (file.size > maxImageSize) {
     alert(`圖片必須小於${maxImageSizeMB}MB!`);
     event.target.value = "";
   } else {
-    const label = document.querySelector(".custom-file-label");
-    label.textContent = productImageInput.value.split("\\").pop();
+    productImageInputLabel.textContent = file.name;
   }
 });
 
 const newProductForm = document.querySelector("#new-product");
+
 newProductForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -135,4 +136,8 @@ newProductForm.addEventListener("submit", async (event) => {
   } else {
     alert(`新增失敗, ${res.body.msg}`);
   }
+});
+
+newProductForm.addEventListener("reset", () => {
+  productImageInputLabel.textContent = "選擇⋯";
 });
