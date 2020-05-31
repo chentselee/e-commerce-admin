@@ -1,17 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const mongoose = require("mongoose");
-
-const productSchema = new mongoose.Schema({
-  category: { type: String, required: true },
-  name: { type: String, required: true },
-  price: { type: Number, required: true },
-  created: { type: Date, required: true },
-  updated: { type: Date },
-  image: Buffer,
-});
-
-const Product = mongoose.model("Product", productSchema);
+const Product = require("../../models/products");
 
 const setHeader = (req, res, next) => {
   res.set({
