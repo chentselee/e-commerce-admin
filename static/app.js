@@ -1,3 +1,5 @@
+const api = "http://localhost:8000";
+
 const Product = (
   name = "",
   id = "",
@@ -9,7 +11,7 @@ const Product = (
   card.classList.add("card", "mb-3", "mx-auto");
   card.innerHTML = `
     <div class="row no-gutters">
-      <div class="col-9">
+      <div class="col-11">
         <div class="card-body container">
           <dl class="row mb-0">
             <dt class="col-4">名稱</dt>
@@ -35,13 +37,35 @@ const Product = (
           </dl>
         </div>
       </div>
-      <div class="col-3"></div>
+      <div class="col-1 pt-3 container">
+        <div class="row pb-1">
+          <button class="btn btn-success btn-sm update">更新</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-danger btn-sm delete">刪除</button>
+        </div>
+      </div>
     </div>
   `;
+  card.querySelector(".delete").addEventListener("click", async () => {
+    if (confirm(`確定要刪除物品: [${name}]嘛?`)) {
+      const res = await fetch(`${api}/products`, {
+        method: "DELETE",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (res.ok) {
+        alert("刪除成功");
+        await reloadProducts();
+      } else {
+        alert("刪除失敗");
+      }
+    } else {
+      return;
+    }
+  });
   return card;
 };
-
-const api = "http://localhost:8000";
 
 async function listProducts() {
   const res = await fetch(`${api}/products`);
@@ -88,6 +112,8 @@ const newProductForm = document.querySelector("#new-product");
 
 newProductForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  const formData = new FormData(event.target);
 
   const serializedFormData = {};
   for (const [key, value] of formData.entries()) {
