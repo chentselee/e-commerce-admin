@@ -12,10 +12,12 @@ const setHeader = (req, res, next) => {
 
 router.use(setHeader);
 
+const fields = ["category", "name", "price", "created", "updated"].join(" ");
+
 router.get("/", (req, res) => {
   if (req.query.hasOwnProperty("id")) {
     Product.findById(req.query.id)
-      .select("category name price created")
+      .select(fields)
       .exec()
       .then((result) => {
         res.json(result);
@@ -23,29 +25,34 @@ router.get("/", (req, res) => {
       .catch((error) => res.status(500).json({ msg: error }));
   } else if (req.query.hasOwnProperty("category")) {
     Product.find({ category: req.query.category })
-      .select("category name price created")
+      .select(fields)
       .sort("name")
       .exec()
       .then((result) => {
         res.json(result);
       })
-      .catch((error) => res.status(500).json({ msg: error }));
+      .catch((error) => {
+        console.log(error);
+        res.sendStatus(500);
+      });
   } else {
     Product.find()
-      .select("_id category name price created")
+      .select(`_id ${fields}`)
       .sort("name")
       .exec()
       .then((result) => {
         res.json(result);
       })
-      .catch((error) => res.status(500).json({ msg: error }));
+      .catch((error) => {
+        console.log(error);
+        res.sendStatus(500);
+      });
   }
 });
 
 router.post("/", (req, res) => {
   const newProduct = new Product({
     ...req.body,
-    image: req.body.image ? new Buffer.from(req.body.image, "base64") : null,
     created: new Date(),
   });
   newProduct.save((error) => {
@@ -68,7 +75,10 @@ router.patch("/", (req, res) => {
         res.sendStatus(204);
       }
     })
-    .catch((error) => res.status(500).json({ msg: error }));
+    .catch((error) => {
+      console.log(error);
+      res.sendStatus(500);
+    });
 });
 
 router.delete("/", (req, res) => {
@@ -81,7 +91,10 @@ router.delete("/", (req, res) => {
         res.json({ deletedCount: result.deletedCount });
       }
     })
-    .catch((error) => res.status(500).json({ msg: error }));
+    .catch((error) => {
+      console.log(error);
+      res.sendStatus(500);
+    });
 });
 
 module.exports = router;

@@ -9,10 +9,7 @@ const Product = (
   card.classList.add("card", "mb-3", "mx-auto");
   card.innerHTML = `
     <div class="row no-gutters">
-      <div class="col-3">
-        <img class="card-img">
-      </div>
-      <div class="col-8">
+      <div class="col-9">
         <div class="card-body container">
           <dl class="row mb-0">
             <dt class="col-4">名稱</dt>
@@ -33,12 +30,12 @@ const Product = (
             </dd>
             <dt class="col-4">最後更新</dt>
             <dd class="col-8">
-              <p class="card-text">${updated ? updated : "-"}</p>
+              <p class="card-text">${updated}</p>
             </dd>
           </dl>
         </div>
       </div>
-      <div class="col-1"></div>
+      <div class="col-3"></div>
     </div>
   `;
   return card;
@@ -57,7 +54,8 @@ async function listProducts() {
         product.name,
         product._id,
         product.price,
-        new Date(product.created).toLocaleString("zh-TW")
+        new Date(product.created).toLocaleString("zh-TW"),
+        new Date(product.updated).toLocaleString("zh-TW")
       )
     );
     document.querySelector(".__products").appendChild(col);
@@ -86,38 +84,10 @@ async function reloadProducts() {
 
 listProducts();
 
-const maxImageSizeMB = 1;
-const maxImageSize = 1024 * 1024 * maxImageSizeMB;
-const productImageInputLabel = document.querySelector(".custom-file-label");
-const productImageInput = document.querySelector("#image");
-
-productImageInput.addEventListener("change", (event) => {
-  const file = event.target.files[0];
-  if (file.size > maxImageSize) {
-    alert(`圖片必須小於${maxImageSizeMB}MB!`);
-    event.target.value = "";
-  } else {
-    productImageInputLabel.textContent = file.name;
-  }
-});
-
 const newProductForm = document.querySelector("#new-product");
 
 newProductForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-
-  const formData = new FormData(event.target);
-  const file = productImageInput.files[0];
-  if (file) {
-    const fileData = await new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.addEventListener("loadend", (event) => {
-        resolve(event.target.result);
-      });
-      reader.readAsDataURL(file);
-    });
-    formData.append("image", fileData);
-  }
 
   const serializedFormData = {};
   for (const [key, value] of formData.entries()) {
@@ -136,8 +106,4 @@ newProductForm.addEventListener("submit", async (event) => {
   } else {
     alert(`新增失敗, ${res.body.msg}`);
   }
-});
-
-newProductForm.addEventListener("reset", () => {
-  productImageInputLabel.textContent = "選擇⋯";
 });

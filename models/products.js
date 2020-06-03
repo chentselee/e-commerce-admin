@@ -6,7 +6,6 @@ const productSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   created: { type: Date, required: true },
   updated: { type: Date },
-  image: Buffer,
 });
 
 module.exports = mongoose.model("Product", productSchema);
