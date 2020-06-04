@@ -122,7 +122,7 @@ async function fetchProducts() {
 }
 
 function clearProducts() {
-  document.querySelector(".__products").innerHTML = "";
+  document.querySelector(".products").innerHTML = "";
 }
 
 async function updateProducts() {
@@ -145,7 +145,7 @@ async function updateProducts() {
         new Date(product.updated).toLocaleString("zh-TW")
       )
     );
-    document.querySelector(".__products").appendChild(col);
+    document.querySelector(".products").appendChild(col);
   });
 })();
 
