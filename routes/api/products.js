@@ -18,6 +18,7 @@ router.get("/", (req, res) => {
   if (req.query.hasOwnProperty("id")) {
     Product.findById(req.query.id)
       .select(fields)
+      .populate("category", "-__v")
       .exec()
       .then((result) => {
         res.json(result);
@@ -26,6 +27,7 @@ router.get("/", (req, res) => {
   } else if (req.query.hasOwnProperty("category")) {
     Product.find({ category: req.query.category })
       .select(fields)
+      .populate("category", "-__v")
       .sort("name")
       .exec()
       .then((result) => {
@@ -38,6 +40,7 @@ router.get("/", (req, res) => {
   } else {
     Product.find()
       .select(`_id ${fields}`)
+      .populate("category", "-__v")
       .sort("name")
       .exec()
       .then((result) => {
