@@ -5,8 +5,10 @@ const categories = require("./routes/api/categories");
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+const DB = process.env.DB || "mongodb://localhost/test";
+export const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || "http://localhost:3000";
 
-mongoose.connect("mongodb://localhost/test", {
+mongoose.connect(DB, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
