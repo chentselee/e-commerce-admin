@@ -5,12 +5,11 @@ const Category = require("../../models/categories");
 router.get("/", (req, res) => {
   Category.find()
     .select("name display_name")
+    .populate("num_products")
     .sort("_id")
     .exec()
     .then((result) => {
-      res
-        .set({ "Access-Control-Allow-Origin": "http://localhost:8080" })
-        .json(result);
+      res.set({ "Access-Control-Allow-Origin": "*" }).json(result);
     })
     .catch((error) => res.status(500).json({ msg: JSON.stringify(error) }));
 });

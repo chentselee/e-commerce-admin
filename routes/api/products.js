@@ -37,6 +37,19 @@ router.get("/", (req, res) => {
         console.log(error);
         res.sendStatus(500);
       });
+  } else if (req.query.hasOwnProperty("name")) {
+    Product.find({ name: req.query.name })
+      .select(fields)
+      .populate("category", "-__v")
+      .sort("name")
+      .exec()
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((error) => {
+        console.log(error);
+        res.sendStatus(500);
+      });
   } else {
     Product.find()
       .select(`_id ${fields}`)
