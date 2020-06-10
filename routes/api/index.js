@@ -6,7 +6,7 @@ const categories = require("./categories");
 const setHeader = (req, res, next) => {
   res.set({
     "Access-Control-Allow-Origin":
-      process.env.ALLOW_ORIGIN || "http://localhost:3000",
+      process.env.FRONTEND || process.env.BACKEND || "http://localhost:3000",
     "Access-Control-Allow-Headers": "content-type",
   });
   next();
