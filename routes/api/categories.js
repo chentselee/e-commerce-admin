@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
     .sort("_id")
     .exec()
     .then((result) => {
-      res.set({ "Access-Control-Allow-Origin": "*" }).json(result);
+      res.json(result);
     })
     .catch((error) => res.status(500).json({ msg: JSON.stringify(error) }));
 });

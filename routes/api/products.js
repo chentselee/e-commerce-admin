@@ -2,16 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Product = require("../../models/products");
 
-const setHeader = (req, res, next) => {
-  res.set({
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "content-type",
-  });
-  next();
-};
-
-router.use(setHeader);
-
 const fields = ["category", "name", "price", "created", "updated"].join(" ");
 
 router.get("/", (req, res) => {
