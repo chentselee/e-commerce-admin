@@ -1,4 +1,4 @@
-const api = "http://localhost:8000";
+const api = process.env.API || "http://localhost:8000";
 
 function Product(
   name = "",
