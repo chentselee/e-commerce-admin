@@ -1,4 +1,4 @@
-const api = document.URL || "http://localhost:8000";
+const api = document.URL || "http://localhost:8000/";
 
 function Product(
   name = "",
@@ -57,7 +57,7 @@ function Product(
   `;
   card.querySelector(".btn-delete").addEventListener("click", async () => {
     if (confirm(`確定要刪除物品"${name}"嘛?`)) {
-      const res = await fetch(`${api}/products`, {
+      const res = await fetch(`${api}products`, {
         method: "DELETE",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ id }),
@@ -75,7 +75,7 @@ function Product(
   card.querySelector(".edit-name").addEventListener("click", async () => {
     const newName = prompt("輸入新名稱", name);
     if (newName && newName.trim() && newName !== name) {
-      const res = await fetch(`${api}/products`, {
+      const res = await fetch(`${api}products`, {
         method: "PATCH",
         headers: {
           "content-type": "application/json",
@@ -95,7 +95,7 @@ function Product(
   card.querySelector(".edit-price").addEventListener("click", async () => {
     const newPrice = prompt("輸入新價格", price);
     if (newPrice && newPrice.trim() && newPrice !== price.toString()) {
-      const res = await fetch(`${api}/products`, {
+      const res = await fetch(`${api}products`, {
         method: "PATCH",
         headers: {
           "content-type": "application/json",
@@ -116,7 +116,7 @@ function Product(
 }
 
 async function fetchProducts() {
-  const res = await fetch(`${api}/products`);
+  const res = await fetch(`${api}products`);
   const products = await res.json();
   return products;
 }
@@ -150,7 +150,7 @@ async function updateProducts() {
 })();
 
 async function fetchCategories() {
-  const res = await fetch(`${api}/categories`);
+  const res = await fetch(`${api}categories`);
   const categories = await res.json();
   return categories;
 }
@@ -182,7 +182,7 @@ newProductForm.addEventListener("submit", async (event) => {
     serializedFormData[key] = value;
   }
 
-  const res = await fetch(`${api}/products`, {
+  const res = await fetch(`${api}products`, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(serializedFormData),
