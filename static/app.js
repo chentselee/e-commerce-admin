@@ -130,7 +130,7 @@ async function updateProducts() {
   await listProducts();
 }
 
-(async function listProducts() {
+async function listProducts() {
   const products = await fetchProducts();
   products.forEach((product) => {
     const col = document.createElement("div");
@@ -147,7 +147,8 @@ async function updateProducts() {
     );
     document.querySelector(".products").appendChild(col);
   });
-})();
+}
+listProducts();
 
 async function fetchCategories() {
   const res = await fetch(`${api}categories`);
